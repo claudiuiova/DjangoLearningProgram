@@ -1,16 +1,17 @@
 from django.contrib import admin
+from .models import Question, Choice, Poll
+import nested_admin
 
-from .models import Question, Choice
-
-class ChoiceInline(admin.TabularInline):
+class ChoiceInline(nested_admin.NestedStackedInline):
     model = Choice
-    extra = 4
+    extra = 0
 
-
-class QuestionAdmin(admin.ModelAdmin):
-    fieldsets = [
-        (None,               {'fields': ['question_text']}),
-    ]
+class QuestionInline(nested_admin.NestedStackedInline):
+    model = Question
+    extra = 0
     inlines = [ChoiceInline]
 
-admin.site.register(Question, QuestionAdmin)
+@admin.register(Poll)
+class PollAdmin(nested_admin.NestedModelAdmin):
+    fields = ["poll_name"]
+    inlines = [QuestionInline]
