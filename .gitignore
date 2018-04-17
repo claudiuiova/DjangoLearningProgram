@@ -103,3 +103,6 @@ ENV/
 # Database stuff
 *.sqlite3
 db.sqlite3
+
+# Virtual Environment
+mysite/
