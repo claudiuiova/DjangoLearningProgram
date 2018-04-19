@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class Poll(models.Model):
     poll_name = models.CharField(_("Poll Name"), max_length=200)
+    pub_date = models.DateTimeField('date published')
 
     class Meta:
         verbose_name = _("Poll")

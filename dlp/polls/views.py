@@ -1,6 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Poll
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from .models import Poll, Choice, Question
+from django.urls import reverse
+from django.http import Http404
 
 def index(request):
     latest_poll_list = Poll.objects.all()
@@ -9,12 +11,9 @@ def index(request):
     }
     return render(request, 'polls/index.html', context)
 
-def detail(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
-
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
-
-def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
+def detail(request, poll_id):
+    try:
+        poll = Poll.objects.get(pk=poll_id)
+    except Poll.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, 'polls/detail.html', {'poll': poll})

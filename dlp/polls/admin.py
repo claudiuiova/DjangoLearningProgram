@@ -13,5 +13,5 @@ class QuestionInline(nested_admin.NestedStackedInline):
 
 @admin.register(Poll)
 class PollAdmin(nested_admin.NestedModelAdmin):
-    fields = ["poll_name"]
+    fields = ["poll_name", "pub_date"]
     inlines = [QuestionInline]
