@@ -101,7 +101,6 @@ ENV/
 .mypy_cache/
 
 # Database stuff
-dlp/polls/migrations/
 *.sqlite3
 db.sqlite3
 
