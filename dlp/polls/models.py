@@ -16,8 +16,16 @@ class Poll(models.Model):
         return self.poll_name
 
 
+class Page(models.Model):
+    page = models.ForeignKey(Poll, verbose_name=_("Poll"), on_delete=models.CASCADE)
+    page_index = models.CharField(_("Page index") ,max_length=200)
+
+    class Meta:
+        verbose_name = _("Page")
+        verbose_name_plural = ("Pages")
+
 class Question(models.Model):
-    poll = models.ForeignKey(Poll, verbose_name=_("Poll"), on_delete=models.CASCADE)
+    poll = models.ForeignKey(Page, verbose_name=_("Page"), on_delete=models.CASCADE)
     question_text = models.CharField(_("Question text") ,max_length=200)
 
     class Meta:

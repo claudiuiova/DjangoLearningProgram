@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Choice, Poll
+from .models import Question, Choice, Poll, Page
 import nested_admin
 
 class ChoiceInline(nested_admin.NestedStackedInline):
@@ -11,7 +11,12 @@ class QuestionInline(nested_admin.NestedStackedInline):
     extra = 0
     inlines = [ChoiceInline]
 
+class PageInline(nested_admin.NestedStackedInline):
+    model = Page
+    extra = 0
+    inlines = [QuestionInline]
+
 @admin.register(Poll)
 class PollAdmin(nested_admin.NestedModelAdmin):
     fields = ["poll_name", "pub_date"]
-    inlines = [QuestionInline]
+    inlines = [PageInline]
