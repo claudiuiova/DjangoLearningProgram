@@ -1,30 +1,6 @@
 <h1><center> {{ poll.poll_name }} </center></h1>
 <ul>
         {% for page in poll.page_set.all %}
-            <li><a href = "{% url 'polls:pages' page.id %}" >{{ page.page_index }}</a></li>
+            <li><a href = "{% url 'polls:questions' page.id %}" >{{ page.page_index }}</a></li>
         {% endfor %}
 </ul>
-
-
-<!-- {% if latest_page_list %}
-    <ul>
-    {% for page in latest_page_list %}
-        <li><a href="{% url 'polls:pageview' page.id %}">{{ page.page_index }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %} -->
-
-<!-- <h1><center> {{ poll.poll_name }} </center></h1>
-<ol>
-    {% for question in poll.question_set.all %}
-        <li>{{ question.question_text }}</li>
-        <form action="">
-            {% for choice in question.choice_set.all %}
-                <input type="radio" name="choice" value="choice.id">{{ choice.choice_text }}<br>
-            {% endfor %}
-        </form>
-    {% endfor %}
-</ol>
-<input type="submit" value="Submit"> -->

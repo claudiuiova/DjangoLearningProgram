@@ -1,12 +1,13 @@
-<h1><center> {{ poll.poll_name }} </center></h1>
+<h1><center> {{ page.page_index }} </center></h1>
+
+<form action="{{ page.id }}">
 <ol>
-    {% for question in poll.question_set.all %}
+    {% for question in page.question_set.all %}
         <li>{{ question.question_text }}</li>
-        <form action="">
             {% for choice in question.choice_set.all %}
                 <input type="radio" name="choice" value="choice.id">{{ choice.choice_text }}<br>
             {% endfor %}
-        </form>
     {% endfor %}
 </ol>
-<input type="submit" value="Submit">
+    <input type="submit" value="Next">
+</form>
