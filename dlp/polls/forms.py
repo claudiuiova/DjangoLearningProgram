@@ -1,9 +1,16 @@
 from django import forms
-from polls.models import Poll, Question, Choice
+from polls.models import Poll, Page, Question, Choice
+
+# CHOICES = []
+
+# def get_choices(id):
+#     CHOICES = []
+#     poll = Poll.objects.get(pk = id)
+#     for
 
 
-class QuestionForm(forms.Form):
-    pass
-   
-class ChoiceForm(forms.Form):
-    pass
+class QuestionForm(forms.ModelForm):
+
+    class Meta:
+        model = Choice
+        fields = ('choice_text', )

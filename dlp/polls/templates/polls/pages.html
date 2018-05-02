@@ -1,6 +1,24 @@
-<h1><center> {{ poll.poll_name }} </center></h1>
-<ul>
-        {% for page in poll.page_set.all %}
-            <li><a href = "{% url 'polls:questions' page.id %}" >{{ page.page_index }}</a></li>
-        {% endfor %}
-</ul>
+<h1><center> Page {{ page.page_index }} </center></h1>
+
+<ol>
+    {% for question in page.question_set.all %}
+        <li>{{ question.question_text }}</li>
+            {% for choice in question.choice_set.all %}
+                <input type="radio" name="{{ question.question_text }}" value="choice.id">{{ choice.choice_text }}<br>
+            {% endfor %}
+    {% endfor %}
+</ol>
+{% if page.page_index == poll.page_set.all.count %}
+    <form action="{%url 'polls:result' poll.id%}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Submit">
+    </form>
+
+{% else %}
+    <form action="{% url 'polls:pages' poll.id next_page %}" method="POST">
+        {% csrf_token %}
+    <input type="submit" value="Next">
+    </form>
+
+{%endif%}
+

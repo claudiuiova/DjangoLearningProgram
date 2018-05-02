@@ -1,7 +1,9 @@
 {% if latest_poll_list %}
     <ul>
     {% for poll in latest_poll_list %}
-        <li><a href="{% url 'polls:pages' poll.id %}">{{ poll.poll_name }}</a></li>
+        {% for page in poll.page_set.all|slice:":1"%}
+            <li><a href="{% url 'polls:pages' poll.id page.page_index%}">{{ poll.poll_name }}</a></li>
+        {%endfor%}
     {% endfor %}
     </ul>
 {% else %}
