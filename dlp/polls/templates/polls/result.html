@@ -1,2 +1,11 @@
-<h1><center> You passed or failed. I don't know! </center></h1>
-<h2><center> Admission score: {{poll.admission_score}} </center></h2>
+
+
+{% if admission_flag%}
+    <h1><center> You passed. Congratulations! </center></h1>
+    <h2><center> Admission score: {{poll.admission_score}} </center></h2>
+    <h3><center> Your score: {{score}} </center></h3>
+{%else%}
+    <h1><center> You failed. Try again! </center></h1>
+    <h2><center> Admission score: {{poll.admission_score}} </center></h2>
+    <h3><center> Your score: {{score}} </center></h3>
+{%endif%}

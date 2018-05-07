@@ -16,13 +16,13 @@ class Poll(models.Model):
 
 
 class Page(models.Model):
-    poll = models.ForeignKey(Poll, verbose_name=_("Poll"), on_delete=models.CASCADE, parent_link=True)
-    id = models.AutoField(primary_key=True)
+    poll = models.ForeignKey(Poll, verbose_name=_("Poll"), on_delete=models.CASCADE)
     page_index = models.IntegerField(default=1)
 
     class Meta:
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
+        ordering = ['page_index']
 
 
 class Question(models.Model):
