@@ -1,6 +1,9 @@
-<h1><center> {{ poll.poll_name }} </center></h1>
-<ul>
-        {% for page in poll.page_set.all %}
-            <li><a href = "{% url 'polls:questions' page.id %}" >{{ page.page_index }}</a></li>
-        {% endfor %}
-</ul>
+<h1><center> Page {{ page.page_index }} </center></h1>
+
+<form method="POST">
+    {%csrf_token%}
+    {{form}}
+    <input type="submit" value="Next">
+</form>
+
+{{mp}}
