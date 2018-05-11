@@ -106,3 +106,6 @@ db.sqlite3
 
 # Virtual Environment
 mysite/
+
+#IDE Stuff
+dlp/.idea
