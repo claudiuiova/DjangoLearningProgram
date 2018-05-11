@@ -1,5 +1,3 @@
-
-
 {% if admission_flag%}
     <h1><center> You passed. Congratulations! </center></h1>
     <h2><center> Admission score: {{poll.admission_score}} </center></h2>
@@ -9,3 +7,18 @@
     <h2><center> Admission score: {{poll.admission_score}} </center></h2>
     <h3><center> Your score: {{score}} </center></h3>
 {%endif%}
+
+<h2> Results:</h2>
+
+{%for field in form%}
+    {{field.label}}<br>
+    {%for f in field%}
+        {%if f.data.value in correct_answers%}
+            <font color="green">{{f}}</font><br>
+        {%else%}
+            {{f}}<br>
+        {%endif%}
+
+    {%endfor%}
+{%endfor%}
+
