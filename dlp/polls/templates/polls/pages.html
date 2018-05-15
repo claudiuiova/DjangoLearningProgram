@@ -1,9 +1,9 @@
 <h1><center> Page {{ page.page_index }} </center></h1>
 
-<form method="POST">
+<form action="{%url 'polls:pages' poll.id page.page_index%}" method="POST">
     {%csrf_token%}
     {{form}}
-    <input type="submit" value="Next">
+    <input type="submit" value="{{btn}}">
 </form>
 
 {{mp}}
