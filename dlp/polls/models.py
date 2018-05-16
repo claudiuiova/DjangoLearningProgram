@@ -6,6 +6,8 @@ class Poll(models.Model):
     poll_name = models.CharField(_("Poll Name"), max_length=200)
     pub_date = models.DateTimeField('date published')
     admission_score = models.IntegerField()
+    attempts = models.IntegerField()
+    passed_poll = models.IntegerField()
 
     class Meta:
         verbose_name = _("Poll")
@@ -13,6 +15,9 @@ class Poll(models.Model):
 
     def __str__(self):
         return self.poll_name
+
+    def pass_rate(self):
+        return round(self.passed_poll / self.attempts * 100, 1)
 
 
 class Page(models.Model):

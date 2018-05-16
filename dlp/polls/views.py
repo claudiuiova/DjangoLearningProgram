@@ -9,6 +9,15 @@ def home(request):
     return render(request, 'polls/home.html', {})
 
 
+def statistics(request):
+    return render(request, 'polls/statistics.html', {})
+
+
+def poll_attempts(request):
+    latest_poll_list = Poll.objects.all()
+    return render(request, 'polls/poll_attempts.html', {'polls': latest_poll_list})
+
+
 def pollview(request):
     latest_poll_list = Poll.objects.all()
 
@@ -69,11 +78,14 @@ def pages(request, poll_id, page_idx):
 
 def result(request, poll_id):
     poll = get_object_or_404(Poll, pk=poll_id)
+    poll.attempts += 1
 
     admission_flag = False
     if request.session['score'] >= poll.admission_score:
+        poll.passed_poll += 1
         admission_flag = True
 
+    poll.save()
     form = ResultForm(poll=poll, post_data=request.session['pdata'])
 
     args = {'poll': poll, 'score': request.session['score'], 'admission_flag': admission_flag,

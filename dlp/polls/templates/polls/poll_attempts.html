@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poll attempts</title>
+</head>
+<body>
+<ul>
+{%if polls%}
+    {% for poll in polls %}
+        <li>{{ poll.poll_name }} ---- {{ poll.attempts }} users ---- {{ poll.pass_rate }}% pass rate</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</body>
+</html>
