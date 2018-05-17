@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
-from .models import Poll, Choice
+from .models import Poll, Choice, PollStats
 from .forms import ChoiceForm, ResultForm
 from datetime import datetime, timezone
 from django.contrib.sessions.models import Session
@@ -16,6 +16,42 @@ def statistics(request):
 def poll_attempts(request):
     latest_poll_list = Poll.objects.all()
     return render(request, 'polls/poll_attempts.html', {'polls': latest_poll_list})
+
+
+def pollview_stats(request):
+    latest_poll_list = Poll.objects.all()
+    return render(request, 'polls/pollview_stats.html', {'latest_poll_list': latest_poll_list})
+
+
+def statistics_results(request, poll_id):
+    poll = get_object_or_404(Poll, pk=poll_id)
+    poll_stats = PollStats.objects.all()
+    users = []
+    for obj in poll_stats:
+        for user, res in eval(obj.stats).items():
+            if res['poll_id'] == poll.id:
+                import ipdb; ipdb.set_trace()
+                users.append(user)
+
+    return render(request, 'polls/polls_users.html', {'stats': users, 'poll': poll})
+
+
+def user_result(request, poll_id, user):
+    poll_stats = PollStats.objects.all()
+    poll = get_object_or_404(Poll, pk=poll_id)
+
+    for obj in poll_stats:
+        for usr, res in eval(obj.stats).items():
+            if usr == user:
+                poll_stats = {user: res}
+                break
+
+    form = ResultForm(poll=poll, post_data=poll_stats[user]['pdata'])
+
+    args = {'poll': poll, 'score': poll_stats[user]['score'], 'admission_flag': poll_stats[user]['admission_flag'],
+            'post_data': poll_stats[user]['pdata'], 'form': form, 'correct_answers': form.correct_answers_list}
+
+    return render(request, 'polls/result.html', args)
 
 
 def pollview(request):
@@ -91,5 +127,15 @@ def result(request, poll_id):
     args = {'poll': poll, 'score': request.session['score'], 'admission_flag': admission_flag,
             'post_data': request.session['pdata'], 'form': form, 'correct_answers': form.correct_answers_list}
 
+    my_data = PollStats(stats={
+                                request.session.session_key: {
+                                    'poll_id': poll_id,
+                                    'admission_score': poll.admission_score,
+                                    'admission_flag': admission_flag,
+                                    'pdata': request.session['pdata'],
+                                    'score': request.session['score']
+                                }
+                            })
+    my_data.save()
     request.session.set_expiry(7200)
     return render(request, 'polls/result.html', args)
