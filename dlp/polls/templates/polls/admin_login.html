@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login as admin</title>
+</head>
+<body>
+<form action="{%url 'polls:adminlogin'%}" method="post">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button type="submit">Log in</button>
+</form>
+</body>
+</html>
