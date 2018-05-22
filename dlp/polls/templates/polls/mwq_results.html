@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Most wrong questions</title>
+</head>
+<body>
+    {%for page in poll.page_set.all%}
+    Page {{page.page_index}}<br>
+    <ul>
+        {%for question in page.question_set.all%}
+            <li>
+                {{question}} -- {{question.correct_answered_rate}}<br>
+            </li>
+        {%endfor%}
+    </ul>
+    {%endfor%}
+
+</body>
+</html>

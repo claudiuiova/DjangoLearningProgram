@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
-from .models import Poll, Choice
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect, HttpResponse
+from django.contrib.sessions.models import Session
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
+from .models import Poll, Choice, PollStats
 from .forms import ChoiceForm, ResultForm
 from datetime import datetime, timezone
-from django.contrib.sessions.models import Session
 
 
 def home(request):
@@ -10,12 +12,75 @@ def home(request):
 
 
 def statistics(request):
-    return render(request, 'polls/statistics.html', {})
+    if request.user.is_authenticated:
+        return render(request, 'polls/statistics.html', {})
+    else:
+        return HttpResponseRedirect('login')
+
+
+def login_as_admin(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            this_user = form.get_user()
+            login(request, this_user)
+            return HttpResponseRedirect('statistics')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'polls/admin_login.html', {'form': form})
 
 
 def poll_attempts(request):
     latest_poll_list = Poll.objects.all()
     return render(request, 'polls/poll_attempts.html', {'polls': latest_poll_list})
+
+
+def pollview_stats(request):
+    latest_poll_list = Poll.objects.all()
+    return render(request, 'polls/pollview_stats.html', {'latest_poll_list': latest_poll_list})
+
+
+def statistics_results(request, poll_id):
+    poll = get_object_or_404(Poll, pk=poll_id)
+    poll_stats = PollStats.objects.all()
+    users = []
+
+    for obj in poll_stats:
+        for user, res in eval(obj.stats).items():
+            if res['poll_id'] == poll.id:
+                users.append(user)
+    if len(users) == 0:
+        return HttpResponse("not attempts on this poll")
+    return render(request, 'polls/polls_users.html', {'stats': users, 'poll': poll})
+
+
+def most_wrong_questions_polls(request):
+    latest_poll_list = Poll.objects.all()
+    return render(request, 'polls/mostwrongquestions_polls.html', {'latest_poll_list': latest_poll_list})
+
+
+def most_wrong_questions_results(request, poll_id):
+    poll = get_object_or_404(Poll, pk=poll_id)
+    return render(request, 'polls/mwq_results.html', {'poll': poll})
+
+
+def user_result(request, poll_id, user):
+    poll_stats = PollStats.objects.all()
+    poll = get_object_or_404(Poll, pk=poll_id)
+
+    for obj in poll_stats:
+        for usr, res in eval(obj.stats).items():
+            if usr == user:
+                poll_stats = {user: res}
+                break
+
+    form = ResultForm(poll=poll, post_data=poll_stats[user]['pdata'])
+
+    args = {'poll': poll, 'score': poll_stats[user]['score'], 'admission_flag': poll_stats[user]['admission_flag'],
+            'post_data': poll_stats[user]['pdata'], 'form': form, 'correct_answers': form.correct_answers_list}
+
+    return render(request, 'polls/result.html', args)
 
 
 def pollview(request):
@@ -91,5 +156,15 @@ def result(request, poll_id):
     args = {'poll': poll, 'score': request.session['score'], 'admission_flag': admission_flag,
             'post_data': request.session['pdata'], 'form': form, 'correct_answers': form.correct_answers_list}
 
+    my_data = PollStats(stats={
+                                request.session.session_key: {
+                                    'poll_id': poll_id,
+                                    'admission_score': poll.admission_score,
+                                    'admission_flag': admission_flag,
+                                    'pdata': request.session['pdata'],
+                                    'score': request.session['score']
+                                }
+                            })
+    my_data.save()
     request.session.set_expiry(7200)
     return render(request, 'polls/result.html', args)

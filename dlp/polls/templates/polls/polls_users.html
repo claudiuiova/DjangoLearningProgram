@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+{%for s in stats%}
+<ul>
+    <li>
+        <a href="{%url 'polls:userresult' poll.id s%}">{{s}}</a>
+    </li>
+</ul>
+
+{%endfor%}
+</body>
+</html>

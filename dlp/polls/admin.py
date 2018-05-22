@@ -12,6 +12,7 @@ class QuestionInline(nested_admin.NestedStackedInline):
     model = Question
     extra = 0
     inlines = [ChoiceInline]
+    fields = ["question_text"]
 
 
 class PageInline(nested_admin.NestedStackedInline):

@@ -1,4 +1,6 @@
 from django import forms
+from django.shortcuts import get_object_or_404
+from .models import Question
 
 
 class ChoiceForm(forms.Form):
@@ -33,6 +35,8 @@ class ResultForm(forms.Form):
 
         for pg in poll.page_set.all():
             for q in pg.question_set.all():
+                q.question_attempts += 1
+                q.save()
                 for c in q.choice_set.all():
                     if c.votes == 1:
                         self.correct_answers_list.append(str(c.id))
@@ -44,3 +48,9 @@ class ResultForm(forms.Form):
                 self.fields[q.id].widget.attrs['disabled'] = 'disabled'
 
                 self.choices = []
+
+        for q_id, c_id in post_data.items():
+            if str(c_id) in self.correct_answers_list:
+                question = get_object_or_404(Question, pk=int(q_id))
+                question.correct_answers += 1
+                question.save()
